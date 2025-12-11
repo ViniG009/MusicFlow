@@ -1,0 +1,81 @@
+<!-- templates/alunos/formulario-editar.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Aluno</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h1 class="mb-4">Editar Aluno</h1>
+    
+    <!-- CORREÇÃO: Use a sintaxe correta para o th:action -->
+    <form th:action="@{/alunos/atualizar/{id}(id=${aluno.id})}" 
+          th:object="${aluno}" 
+          method="post">
+        
+        <!-- Campo Nome -->
+        <div class="mb-3">
+            <label class="form-label">Nome:</label>
+            <input type="text" class="form-control" th:field="*{nome}" th:errorclass="is-invalid">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('nome')}">
+                <span th:errors="*{nome}"></span>
+            </div>
+        </div>
+        
+        <!-- Campo Gmail -->
+        <div class="mb-3">
+            <label class="form-label">Gmail:</label>
+            <input type="email" class="form-control" th:field="*{gmail}" th:errorclass="is-invalid">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('gmail')}">
+                <span th:errors="*{gmail}"></span>
+            </div>
+        </div>
+        
+        <!-- Campo Data de Nascimento -->
+<!-- templates/alunos/formulario-editar.html -->
+<!-- Campo Data de Nascimento -->
+<div class="mb-3">
+    <label class="form-label">Data de Nascimento:</label>
+    <input type="date" class="form-control" 
+           th:field="*{dataNascimento}"
+           th:value="${aluno.dataNascimento != null} ? ${#temporals.format(aluno.dataNascimento, 'yyyy-MM-dd')} : ''"
+           required>
+    <div class="invalid-feedback" th:if="${#fields.hasErrors('dataNascimento')}">
+        <span th:errors="*{dataNascimento}"></span>
+    </div>
+</div>
+        
+        <!-- Campo Instrumento -->
+        <div class="mb-3">
+            <label class="form-label">Instrumento:</label>
+            <input type="text" class="form-control" th:field="*{instrumento}" th:errorclass="is-invalid">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('instrumento')}">
+                <span th:errors="*{instrumento}"></span>
+            </div>
+        </div>
+        
+        <!-- 🔥 CAMPO ADICIONAL: Professor (Dropdown) -->
+        <div class="mb-3">
+            <label class="form-label">Professor:</label>
+            <select class="form-select" th:field="*{professor}">
+                <option value="">-- Selecione um Professor --</option>
+                <option th:each="prof : ${professores}"
+                        th:value="${prof.id}"
+                        th:text="${prof.nome}"
+                        th:selected="${aluno.professor != null and aluno.professor.id == prof.id}">
+                </option>
+            </select>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('professor')}">
+                <span th:errors="*{professor}"></span>
+            </div>
+        </div>
+        
+        <!-- Botões -->
+        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+        <a th:href="@{/alunos}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Music School - Professores</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --professor-color: #7209b7;
+            --professor-light: rgba(114, 9, 183, 0.1);
+            --professor-dark: #5a189a;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .professor-navbar {
+            background: linear-gradient(90deg, var(--professor-dark) 0%, var(--professor-color) 100%);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .professor-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border-left: 5px solid var(--professor-color);
+        }
+        
+        .btn-professor {
+            background: linear-gradient(90deg, var(--professor-color) 0%, var(--professor-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-professor:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(114, 9, 183, 0.4);
+            color: white;
+        }
+        
+        .professor-badge {
+            background: var(--professor-light);
+            color: var(--professor-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid rgba(114, 9, 183, 0.3);
+        }
+        
+        .aluno-count-badge {
+            background: linear-gradient(90deg, #4361ee 0%, #3a0ca3 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .table-professores tbody tr:hover {
+            background-color: var(--professor-light);
+            cursor: pointer;
+        }
+        
+        .salary-badge {
+            background-color: #e9ecef;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg professor-navbar">
+        <div class="container">
+            <a class="navbar-brand text-white fw-bold" href="/professores">
+                <i class="bi bi-person-badge me-2"></i>Professores
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link text-white" href="/alunos">
+                    <i class="bi bi-people me-1"></i>Alunos
+                </a>
+                <a class="nav-link text-white" href="/professores/novo">
+                    <i class="bi bi-person-plus me-1"></i>Novo Professor
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Cabeçalho -->
+        <div class="professor-card">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="text-professor">
+                        <i class="bi bi-person-badge-fill me-2"></i>Professores Cadastrados
+                    </h1>
+                    <p class="text-muted mt-2">Gerencie os professores da escola de música</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <a th:href="@{/professores/novo}" class="btn btn-professor">
+                        <i class="bi bi-person-plus me-2"></i>Novo Professor
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Container da Tabela -->
+        <div class="card mt-4 shadow">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="card-title mb-0">
+                        <i class="bi bi-list-ul me-2"></i>Lista de Professores
+                    </h4>
+                    <span class="aluno-count-badge">
+                        <i class="bi bi-people-fill me-1"></i>
+                        <span th:text="${professores.size()}">0</span> professores
+                    </span>
+                </div>
+
+                <!-- Tabela -->
+                <div class="table-responsive">
+                    <table class="table table-hover table-professores">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Especialidade</th>
+                                <th>Experiência</th>
+                                <th>Alunos</th>
+                                <th class="text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Linhas de professores -->
+                            <tr th:each="professor : ${professores}">
+                                <td>
+                                    <strong th:text="${professor.nome}"></strong>
+                                    <div th:if="${professor.telefone}" class="text-muted small">
+                                        <i class="bi bi-telephone"></i>
+                                        <span th:text="${professor.telefone}"></span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a th:href="'mailto:' + ${professor.email}" class="text-decoration-none">
+                                        <span th:text="${professor.email}"></span>
+                                    </a>
+                                </td>
+                                <td>
+                                    <span class="professor-badge" th:text="${professor.especialidade}"></span>
+                                </td>
+                                <td>
+                                    <span th:if="${professor.experienciaAnos}" 
+                                          class="badge bg-info">
+                                        <span th:text="${professor.experienciaAnos}"></span> anos
+                                    </span>
+                                    <span th:unless="${professor.experienciaAnos}" 
+                                          class="text-muted">-</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary">
+                                        <i class="bi bi-person-fill"></i>
+                                        <span th:text="${professor.quantidadeAlunos}"></span> alunos
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a th:href="@{/professores/editar/{id}(id=${professor.id})}" 
+                                           class="btn btn-outline-warning btn-sm">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a th:href="@{/professores/detalhes/{id}(id=${professor.id})}" 
+                                           class="btn btn-outline-info btn-sm">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a th:href="@{/professores/excluir/{id}(id=${professor.id})}" 
+                                           class="btn btn-outline-danger btn-sm"
+                                           onclick="return confirm('Excluir professor ' + '${professor.nome}' + '?')">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <!-- Estado vazio -->
+                            <tr th:if="${professores.empty}">
+                                <td colspan="6" class="text-center py-5">
+                                    <div class="text-muted">
+                                        <i class="bi bi-person-x display-6"></i>
+                                        <h4 class="mt-3">Nenhum professor cadastrado</h4>
+                                        <p>Cadastre o primeiro professor para começar!</p>
+                                        <a th:href="@{/professores/novo}" class="btn btn-professor mt-2">
+                                            <i class="bi bi-person-plus me-2"></i>Cadastrar Professor
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rodapé -->
+        <div class="text-center mt-4 text-muted">
+            <small>
+                <i class="bi bi-c-circle"></i> 2024 Music School - Sistema de Professores
+                <br>
+                <span class="badge bg-light text-dark">Relacionamento 1:N com Alunos</span>
+            </small>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

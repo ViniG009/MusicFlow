@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalhes do Professor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --professor-color: #7209b7;
+            --professor-light: rgba(114, 9, 183, 0.1);
+            --professor-dark: #5a189a;
+            --aluno-color: #4361ee;
+        }
+        
+        .professor-detail-card {
+            border-left: 5px solid var(--professor-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .detail-section {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #495057;
+            min-width: 180px;
+        }
+        
+        .detail-value {
+            color: #212529;
+        }
+        
+        .professor-badge {
+            background: var(--professor-light);
+            color: var(--professor-color);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+            border: 1px solid rgba(114, 9, 183, 0.3);
+        }
+        
+        .aluno-badge {
+            background-color: rgba(67, 97, 238, 0.1);
+            color: var(--aluno-color);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(67, 97, 238, 0.3);
+        }
+        
+        .empty-alunos {
+            padding: 30px;
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-dark" style="background: linear-gradient(90deg, var(--professor-dark) 0%, var(--professor-color) 100%);">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/professores">
+                <i class="bi bi-arrow-left me-2"></i>Voltar para Professores
+            </a>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <!-- Card Principal -->
+        <div class="card professor-detail-card">
+            <!-- Cabeçalho -->
+            <div class="card-header text-white d-flex justify-content-between align-items-center" 
+                 style="background: linear-gradient(90deg, var(--professor-dark) 0%, var(--professor-color) 100%);">
+                <div>
+                    <h4 class="mb-0">
+                        <i class="bi bi-person-badge-fill me-2"></i>Detalhes do Professor
+                    </h4>
+                    <small>Informações completas e alunos vinculados</small>
+                </div>
+                <span class="badge bg-light text-dark fs-6">
+                    ID: <span th:text="${professor.id}"></span>
+                </span>
+            </div>
+            
+            <div class="card-body">
+                <!-- Informações Pessoais -->
+                <div class="detail-section">
+                    <h5 class="mb-4 border-bottom pb-2">
+                        <i class="bi bi-person-circle me-2"></i>Informações Pessoais
+                    </h5>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-3 detail-label">Nome:</div>
+                        <div class="col-md-9 detail-value">
+                            <h5 th:text="${professor.nome}" class="fw-bold text-professor"></h5>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-3 detail-label">Email:</div>
+                        <div class="col-md-9 detail-value">
+                            <a th:href="'mailto:' + ${professor.email}" class="text-decoration-none">
+                                <i class="bi bi-envelope me-1"></i>
+                                <span th:text="${professor.email}"></span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-3 detail-label">Telefone:</div>
+                        <div class="col-md-9 detail-value">
+                            <span th:if="${professor.telefone}">
+                                <i class="bi bi-telephone me-1"></i>
+                                <span th:text="${professor.telefone}"></span>
+                            </span>
+                            <span th:unless="${professor.telefone}" class="text-muted">
+                                <i class="bi bi-telephone-x me-1"></i>Não informado
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Informações Profissionais -->
+                <div class="detail-section">
+                    <h5 class="mb-4 border-bottom pb-2">
+                        <i class="bi bi-briefcase-fill me-2"></i>Informações Profissionais
+                    </h5>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-3 detail-label">Especialidade:</div>
+                        <div class="col-md-9">
+                            <span class="professor-badge" th:text="${professor.especialidade}"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-3 detail-label">Experiência:</div>
+                        <div class="col-md-9 detail-value">
+                            <span th:if="${professor.experienciaAnos}">
+                                <span class="badge bg-info">
+                                    <span th:text="${professor.experienciaAnos}"></span> anos
+                                </span>
+                            </span>
+                            <span th:unless="${professor.experienciaAnos}" class="text-muted">
+                                Não informada
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-3 detail-label">Salário:</div>
+                        <div class="col-md-9 detail-value">
+                            <span th:if="${professor.salario}">
+                                <span class="badge bg-success">
+                                    R$ <span th:text="${#numbers.formatDecimal(professor.salario, 1, 2)}"></span>
+                                </span>
+                            </span>
+                            <span th:unless="${professor.salario}" class="text-muted">
+                                Não informado
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-3 detail-label">Data Contratação:</div>
+                        <div class="col-md-9 detail-value">
+                            <span th:if="${professor.dataContratacao}">
+                                <i class="bi bi-calendar3 me-1"></i>
+                                <span th:text="${professor.dataContratacao}"></span>
+                            </span>
+                            <span th:unless="${professor.dataContratacao}" class="text-muted">
+                                Não informada
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Alunos Vinculados -->
+                <div class="detail-section">
+                    <h5 class="mb-4 border-bottom pb-2 d-flex justify-content-between align-items-center">
+                        <span>
+                            <i class="bi bi-people-fill me-2"></i>Alunos Vinculados
+                            <small class="text-muted ms-2">(Relacionamento 1:N)</small>
+                        </span>
+                        <span class="badge bg-primary">
+                            <i class="bi bi-person-fill"></i>
+                            <span th:text="${professor.alunos != null ? professor.alunos.size() : 0}"></span> alunos
+                        </span>
+                    </h5>
+                    
+                    <div th:if="${professor.alunos != null and !professor.alunos.isEmpty()}">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Instrumento</th>
+                                        <th>Email</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="aluno : ${professor.alunos}">
+                                        <td>
+                                            <strong th:text="${aluno.nome}"></strong>
+                                        </td>
+                                        <td>
+                                            <span class="aluno-badge" th:text="${aluno.instrumento}"></span>
+                                        </td>
+                                        <td>
+                                            <span th:text="${aluno.gmail}"></span>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{/alunos/detalhes/{id}(id=${aluno.id})}" 
+                                               class="btn btn-outline-info btn-sm">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div th:if="${professor.alunos == null or professor.alunos.isEmpty()}" class="empty-alunos">
+                        <i class="bi bi-people display-6 text-muted"></i>
+                        <h5 class="mt-3 text-muted">Nenhum aluno vinculado</h5>
+                        <p class="text-muted">Este professor ainda não tem alunos associados.</p>
+                        <a th:href="@{/alunos/novo}" class="btn btn-primary mt-2">
+                            <i class="bi bi-person-plus me-2"></i>Cadastrar Aluno
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Ações -->
+                <div class="mt-4 pt-3 border-top">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <a th:href="@{/professores}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-1"></i>Voltar para Lista
+                            </a>
+                        </div>
+                        
+                        <div class="btn-group" role="group">
+                            <a th:href="@{/professores/editar/{id}(id=${professor.id})}" 
+                               class="btn btn-warning">
+                                <i class="bi bi-pencil me-1"></i>Editar
+                            </a>
+                            
+                            <a th:href="@{/professores/excluir/{id}(id=${professor.id})}" 
+                               class="btn btn-danger"
+                               th:onclick="'return confirm(\'Excluir ' + ${professor.nome} + '?\')'"
+                                <i class="bi bi-trash me-1"></i>Excluir
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Rodapé -->
+            <div class="card-footer text-muted text-center">
+                <small>
+                    <i class="bi bi-info-circle me-1"></i>
+                    Relacionamento 1:N - 1 Professor : N Alunos
+                    <span class="mx-2">•</span>
+                    Última visualização: 
+                    <script>
+                        document.write(new Date().toLocaleDateString('pt-BR'));
+                    </script>
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Music School - Alunos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Slab:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #f72585;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4cc9f0;
+            --warning-color: #f8961e;
+            --danger-color: #f94144;
+            --professor-color: #7209b7;
+        }
+        
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .music-navbar {
+            background: linear-gradient(90deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .nav-brand {
+            font-family: 'Roboto Slab', serif;
+            font-weight: 600;
+            font-size: 1.8rem;
+            color: white !important;
+        }
+        
+        .nav-brand i {
+            color: var(--accent-color);
+            margin-right: 10px;
+        }
+        
+        .header-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border-left: 5px solid var(--accent-color);
+        }
+        
+        .header-card h1 {
+            color: var(--secondary-color);
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+        
+        .header-card p {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+        
+        .btn-music-primary {
+            background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.3);
+        }
+        
+        .btn-music-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(67, 97, 238, 0.4);
+            color: white;
+        }
+        
+        .btn-music-success {
+            background: linear-gradient(90deg, #38b000 0%, #2d9100 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-music-success:hover {
+            transform: translateY(-2px);
+            color: white;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .table-title {
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .music-table {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .music-table thead {
+            background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+        }
+        
+        .music-table th {
+            font-weight: 500;
+            padding: 15px;
+            border: none;
+        }
+        
+        .music-table tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        .music-table tbody tr:hover {
+            background-color: rgba(67, 97, 238, 0.05);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+        }
+        
+        .music-table td {
+            padding: 15px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .btn-action {
+            border-radius: 6px;
+            padding: 6px 15px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin: 2px;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        
+        .btn-edit {
+            background-color: rgba(248, 150, 30, 0.1);
+            color: var(--warning-color);
+            border: 1px solid rgba(248, 150, 30, 0.3);
+        }
+        
+        .btn-edit:hover {
+            background-color: var(--warning-color);
+            color: white;
+            transform: translateY(-1px);
+        }
+        
+        .btn-delete {
+            background-color: rgba(249, 65, 68, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(249, 65, 68, 0.3);
+        }
+        
+        .btn-delete:hover {
+            background-color: var(--danger-color);
+            color: white;
+            transform: translateY(-1px);
+        }
+        
+        .btn-details {
+            background-color: rgba(76, 201, 240, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(76, 201, 240, 0.3);
+        }
+        
+        .btn-details:hover {
+            background-color: var(--success-color);
+            color: white;
+            transform: translateY(-1px);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            color: #dee2e6;
+            margin-bottom: 15px;
+        }
+        
+        .student-count {
+            background: linear-gradient(90deg, var(--accent-color) 0%, #ff6b9d 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            padding: 20px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        .instrument-badge {
+            background-color: #e9ecef;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+        
+        .professor-badge {
+            background: linear-gradient(90deg, rgba(114, 9, 183, 0.1) 0%, rgba(114, 9, 183, 0.2) 100%);
+            color: var(--professor-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1px solid rgba(114, 9, 183, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .no-professor {
+            color: #6c757d;
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+        
+        .email-link {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .email-link:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+        
+        /* Menu de navegação para Professores */
+        .nav-professores {
+            background: linear-gradient(90deg, var(--professor-color) 0%, #9d4edd 100%) !important;
+        }
+        
+        .nav-professores:hover {
+            background: linear-gradient(90deg, #5a189a 0%, var(--professor-color) 100%) !important;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .table-container {
+                padding: 15px;
+                overflow-x: auto;
+            }
+            
+            .btn-action {
+                display: block;
+                width: 100%;
+                margin-bottom: 5px;
+            }
+            
+            .action-buttons {
+                min-width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg music-navbar">
+        <div class="container">
+            <a class="navbar-brand nav-brand" href="/alunos">
+                <i class="bi bi-music-note-beamed"></i>Music School
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/alunos">
+                            <i class="bi bi-house-door me-1"></i>Início
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="/alunos/novo">
+                            <i class="bi bi-person-plus me-1"></i>Novo Aluno
+                        </a>
+                    </li>
+                    <!-- 🔗 NOVO LINK PARA PROFESSORES -->
+                    <li class="nav-item">
+                        <a class="nav-link text-white nav-professores" href="/professores">
+                            <i class="bi bi-person-badge me-1"></i>Professores
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Cabeçalho -->
+        <div class="header-card">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1><i class="bi bi-people-fill me-2"></i>Alunos Cadastrados</h1>
+                    <p class="mt-2">Gerencie todos os alunos e seus professores</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <div class="d-flex justify-content-end gap-2">
+                        <a th:href="@{/professores}" class="btn btn-music-primary">
+                            <i class="bi bi-person-badge me-2"></i>Ver Professores
+                        </a>
+                        <a th:href="@{/alunos/novo}" class="btn btn-music-success">
+                            <i class="bi bi-person-plus me-2"></i>Novo Aluno
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Container da Tabela -->
+        <div class="table-container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="table-title">
+                    <i class="bi bi-list-ul me-2"></i>Lista de Alunos
+                    <small class="text-muted ms-2" style="font-size: 0.9rem;">
+                        Relacionamento 1:N com Professores
+                    </small>
+                </h3>
+                <span class="student-count">
+                    <i class="bi bi-person-fill me-1"></i>
+                    <span th:text="${alunos.size()}">0</span> alunos
+                </span>
+            </div>
+
+            <!-- Tabela -->
+            <div class="table-responsive">
+                <table class="table music-table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Gmail</th>
+                            <th>Data Nascimento</th>
+                            <th>Instrumento</th>
+                            <th>Professor</th> <!-- 🔗 NOVA COLUNA -->
+                            <th class="text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Linhas de alunos -->
+                        <tr th:each="aluno : ${alunos}">
+                            <td>
+                                <strong th:text="${aluno.nome}"></strong>
+                            </td>
+                            <td>
+                                <a th:href="'mailto:' + ${aluno.gmail}" class="email-link" th:text="${aluno.gmail}"></a>
+                            </td>
+                            <td th:text="${aluno.dataNascimento}"></td>
+                            <td>
+                                <span class="instrument-badge" th:text="${aluno.instrumento}"></span>
+                            </td>
+                            <td>
+                                <!-- 🔗 MOSTRA O PROFESSOR DO ALUNO -->
+                                <div th:if="${aluno.professor != null}">
+                                    <span class="professor-badge">
+                                        <i class="bi bi-person-badge"></i>
+                                        <span th:text="${aluno.professor.nome}"></span>
+                                        <small class="ms-1" style="font-size: 0.75rem; opacity: 0.8;">
+                                            (<span th:text="${aluno.professor.especialidade}"></span>)
+                                        </small>
+                                    </span>
+                                </div>
+                                <div th:if="${aluno.professor == null}">
+                                    <span class="no-professor">
+                                        <i class="bi bi-person-x"></i> Sem professor
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="action-buttons">
+                                <div class="d-flex flex-wrap">
+                                    <a th:href="@{/alunos/editar/{id}(id=${aluno.id})}" 
+                                       class="btn btn-edit me-2 mb-2">
+                                        <i class="bi bi-pencil me-1"></i>Editar
+                                    </a>
+                                    <a th:href="@{/alunos/detalhes/{id}(id=${aluno.id})}" 
+                                       class="btn btn-details me-2 mb-2">
+                                        <i class="bi bi-eye me-1"></i>Detalhes
+                                    </a>
+                                    <a th:href="@{/alunos/excluir/{id}(id=${aluno.id})}" 
+                                       class="btn btn-delete mb-2"
+                                       th:onclick="'return confirm(\'Tem certeza que deseja excluir o aluno \\'' + ${aluno.nome} + '\\'?\')'">
+                                        <i class="bi bi-trash me-1"></i>Excluir
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Estado vazio -->
+                        <tr th:if="${alunos.empty}">
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <i class="bi bi-person-x"></i>
+                                    <h4 class="mt-3">Nenhum aluno cadastrado</h4>
+                                    <p class="text-muted">Comece cadastrando seu primeiro aluno!</p>
+                                    <div class="mt-4">
+                                        <a th:href="@{/alunos/novo}" class="btn btn-music-primary">
+                                            <i class="bi bi-person-plus me-2"></i>Cadastrar Primeiro Aluno
+                                        </a>
+                                        <a th:href="@{/professores}" class="btn btn-music-primary ms-2">
+                                            <i class="bi bi-person-badge me-2"></i>Ver Professores
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Estatísticas (opcional) -->
+            <div class="mt-4 p-3 bg-light rounded" th:if="${not alunos.empty}">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <h5 class="text-primary">
+                            <i class="bi bi-people-fill"></i>
+                            <span th:text="${alunos.size()}">0</span>
+                        </h5>
+                        <small>Total de Alunos</small>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <h5 class="text-success">
+                            <i class="bi bi-person-check"></i>
+                            <span th:text="${alunos.?[professor != null].size()}">0</span>
+                        </h5>
+                        <small>Com Professor</small>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <h5 class="text-warning">
+                            <i class="bi bi-person-dash"></i>
+                            <span th:text="${alunos.?[professor == null].size()}">0</span>
+                        </h5>
+                        <small>Sem Professor</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rodapé -->
+        <div class="footer">
+            <p>
+                <i class="bi bi-c-circle"></i> 2024 Music School - Sistema de Gerenciamento
+                <br>
+                <small class="text-muted">Relacionamento 1:N: Professor → Alunos</small>
+            </p>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Script para confirmação de exclusão -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Confirmação personalizada para exclusão
+            const deleteButtons = document.querySelectorAll('.btn-delete');
+            
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const row = this.closest('tr');
+                    const studentName = row.querySelector('strong').textContent;
+                    const professorName = row.querySelector('.professor-badge span')?.textContent || 'Sem professor';
+                    
+                    const message = professorName.includes('Sem professor') 
+                        ? `Tem certeza que deseja excluir o aluno "${studentName}"?`
+                        : `Tem certeza que deseja excluir o aluno "${studentName}" do professor ${professorName}?`;
+                    
+                    if (!confirm(message)) {
+                        e.preventDefault();
+                    }
+                });
+            });
+            
+            // Efeito hover nas linhas
+            const tableRows = document.querySelectorAll('.music-table tbody tr');
+            tableRows.forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                
+                row.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

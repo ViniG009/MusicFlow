@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Professor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --professor-color: #7209b7;
+            --professor-dark: #5a189a;
+        }
+        
+        .edit-professor-card {
+            max-width: 700px;
+            margin: 0 auto;
+            border-left: 5px solid var(--professor-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .btn-save-professor {
+            background: linear-gradient(90deg, var(--professor-color) 0%, var(--professor-dark) 100%);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+        }
+        
+        .btn-save-professor:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(114, 9, 183, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar Simples -->
+    <nav class="navbar navbar-dark" style="background: linear-gradient(90deg, #5a189a 0%, #7209b7 100%);">
+        <div class="container">
+            <a class="navbar-brand" href="/professores">
+                <i class="bi bi-arrow-left me-2"></i>Voltar para Professores
+            </a>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <div class="card edit-professor-card">
+            <div class="card-header text-white" style="background: linear-gradient(90deg, #5a189a 0%, #7209b7 100%);">
+                <h4 class="mb-0">
+                    <i class="bi bi-pencil-square me-2"></i>Editar Professor
+                    <small class="opacity-75 ms-2" th:text="${professor.nome}"></small>
+                </h4>
+            </div>
+            
+            <div class="card-body p-4">
+                <form th:action="@{/professores/atualizar/{id}(id=${professor.id})}" 
+                      th:object="${professor}" 
+                      method="post">
+                    
+                    <div class="row">
+                        <!-- Nome -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Nome Completo:</label>
+                            <input type="text" class="form-control" th:field="*{nome}" required>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('nome')}">
+                                <span th:errors="*{nome}"></span>
+                            </div>
+                        </div>
+                        
+                        <!-- Email -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Email:</label>
+                            <input type="email" class="form-control" th:field="*{email}" required>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('email')}">
+                                <span th:errors="*{email}"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <!-- Especialidade -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Especialidade:</label>
+                            <select class="form-select" th:field="*{especialidade}" required>
+                                <option value="">Selecione...</option>
+                                <option value="Violão">Violão</option>
+                                <option value="Piano">Piano</option>
+                                <option value="Canto">Canto</option>
+                                <option value="Violino">Violino</option>
+                                <option value="Bateria">Bateria</option>
+                                <option value="Teoria Musical">Teoria Musical</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('especialidade')}">
+                                <span th:errors="*{especialidade}"></span>
+                            </div>
+                        </div>
+                        
+                        <!-- Telefone -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Telefone:</label>
+                            <input type="tel" class="form-control" th:field="*{telefone}" placeholder="(00) 00000-0000">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <!-- Salário -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Salário (R$):</label>
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input type="number" step="0.01" class="form-control" th:field="*{salario}" placeholder="0.00">
+                            </div>
+                        </div>
+                        
+                        <!-- Experiência -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Experiência (anos):</label>
+                            <input type="number" class="form-control" th:field="*{experienciaAnos}" min="0" max="50">
+                        </div>
+                    </div>
+                    
+                    <!-- Data Contratação -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Data de Contratação:</label>
+                        <input type="date" class="form-control" th:field="*{dataContratacao}">
+                    </div>
+                    
+                    <!-- Informações do Professor -->
+                    <div class="alert alert-info">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-info-circle me-2 fs-5"></i>
+                            <div>
+                                <strong>ID do Professor:</strong> 
+                                <span th:text="${professor.id}" class="badge bg-dark ms-2"></span>
+                                <span th:if="${professor.alunos}" class="ms-3">
+                                    <strong>Alunos:</strong>
+                                    <span class="badge bg-primary ms-2" th:text="${professor.alunos.size()}"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Botões -->
+                    <div class="d-flex justify-content-between pt-3 border-top">
+                        <a th:href="@{/professores}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-1"></i>Cancelar
+                        </a>
+                        <div>
+                            <a th:href="@{/professores/detalhes/{id}(id=${professor.id})}" 
+                               class="btn btn-outline-info me-2">
+                                <i class="bi bi-eye me-1"></i>Ver Detalhes
+                            </a>
+                            <button type="submit" class="btn btn-save-professor">
+                                <i class="bi bi-check-circle me-1"></i>Salvar Alterações
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
